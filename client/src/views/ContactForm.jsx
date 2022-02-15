@@ -1,16 +1,30 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const ContactForm = () => {
-    const [email, setEmail] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        message: ""
-    })
+    const [submitted, setSubmitted] = useState(false);
 
-    const sendEmail = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-    }
+        setSubmitted(true);
+        const { firstName, email, message } = e.target.elements;
+        let details = {
+            firstName: firstName.value,
+            email: email.value,
+            message: message.value,
+        };
+        console.log(details)
+        let response = await fetch("http://localhost:3000/send", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json;charset=utf-8",
+            },
+            body: JSON.stringify(details),
+        });
+        setSubmitted(false);
+        let result = await response.json();
+        alert(result.status);
+    };
 
     return (
         <div className="absolute flex flex-row justify-between p-0 mx-auto w-screen">
@@ -19,13 +33,15 @@ const ContactForm = () => {
                 <p className="text-xl text-slate-50">Fill out our form and our team will get back to you soon.</p>
             </div>
             <div style={{ backgroundColor: "#192b38", opacity: "0.9" }} className="flex flex-col justify-between w-4/12 p-10 h-screen backdrop-blur-xl right-0">
-                <form onSubmit={sendEmail}>
+                <form onSubmit={handleSubmit}>
                     <h2 className="text-5xl text-slate-50 mb-16">Contact Us</h2>
                     <div className="flex justify-between">
                         <label htmlFor="firstName" className="text-slate-50 self-center">First Name: </label>
                         <input
                             style={{ focus: "outline-none !important" }}
                             className="w-96 my-5 py-2 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
+                            // onChange={(e) => setFirstName(e.target.value)}
+                            // value={email.firstName}
                             type="text"
                             name="firstName"
                             id="firstName"
@@ -36,6 +52,8 @@ const ContactForm = () => {
                         <label htmlFor="lastName" className="text-slate-50 self-center">Last Name: </label>
                         <input
                             className="w-96 my-5 py-2 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
+                            // onChange={(e) => setLastName(e.target.value)}
+                            // value={email.lastName}
                             type="text"
                             name="lastName"
                             id="lastName"
@@ -46,6 +64,8 @@ const ContactForm = () => {
                         <label htmlFor="email" className="text-slate-50 self-center">Email: </label>
                         <input
                             className="w-96 my-5 py-2 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
+                            // onChange={(e) => setEmail(e.target.value)}
+                            // value={email.email}
                             type="email"
                             name="email"
                             id="email"
@@ -59,8 +79,10 @@ const ContactForm = () => {
                         <label htmlFor="phone" className="text-slate-50 self-center">Phone Number: </label>
                         <input
                             className="w-96 my-5 py-2 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
+                            // onChange={(e) => setPhone(e.target.value)}
+                            // value={email.phone}
                             type="tel"
-                            pattern="([0-9]{3})[0-9]{3}-[0-9]{4}"
+                            // pattern="([0-9]{3})[0-9]{3}-[0-9]{4}"
                             name="phone"
                             id="phone"
                             placeholder="(123) 456-7890"
@@ -70,6 +92,8 @@ const ContactForm = () => {
                         <label htmlFor="subject" className="text-slate-50 self-center">Subject: </label>
                         <input
                             className="w-96 my-5 py-2 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
+                            // onChange={(e) => setSubject(e.target.value)}
+                            // value={email.subject}
                             type="text"
                             name="subject"
                             id="subject"
@@ -80,6 +104,8 @@ const ContactForm = () => {
                         <label htmlFor="message" className="text-slate-50 self-center">Message: </label>
                         <textarea
                             className="w-96 h-26 my-5 py-3 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
+                            // onChange={(e) => setMessage(e.target.value)}
+                            // value={email.message}
                             name="message"
                             id="message"
                             placeholder="Type your message here"

@@ -4,6 +4,8 @@ const app = express();
 require("dotenv").config();
 const port = 3000;
 
+app.use(express.json());
+
 let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -17,23 +19,32 @@ let transporter = nodemailer.createTransport({
 })
 
 transporter.verify((err, success) => {
-    err ? console.log(err) : console.log(`Server is ready to take messages: ${success}`)
-})
+    err
+        ? console.log(err)
+        : console.log(`Server is ready to take messages: ${success}`)
+});
 
-// tester
-let mailOptions = {
-    from: "test@gmail.com",
-    to: process.env.EMAIL,
-    subject: "Nodemailer API",
-    text: "Hi from your nodemailer API"
-}
+app.post("/send", (req, res) => {
+    console.log(JSON.stringify(req.body.newMail))
+    console.log(req)
+    const name = req.body.firstName;
+    const email = req.body.email;
+    const message = req.body.message;
+    const mail = {
+        from: email,
+        to: process.env.EMAIL,
+        subject: "Contact Form Submission",
+        text: message
+    };
 
-transporter.sendMail(mailOptions, function (err, data) {
-    if (err) {
-        console.log("Error " + err)
-    } else {
-        console.log("Email sent successfully")
-    }
+    transporter.sendMail(mail, (err) => {
+        if (err) {
+            res.json({ status: "fail" });
+        } else {
+            console.log("Message Sent");
+            res.json({ status: "success" });
+        }
+    })
 })
 
 app.listen(port, () => {
