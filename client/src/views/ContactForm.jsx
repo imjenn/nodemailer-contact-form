@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 const ContactForm = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitted(true);
-        const { firstName, email, message } = e.target.elements;
+        const { firstName, lastName, email, phone, subject, message } = e.target.elements;
+
         let details = {
             firstName: firstName.value,
+            lastName: lastName.value,
             email: email.value,
-            message: message.value,
+            phone: phone.value,
+            subject: subject.value,
+            message: message.value
         };
-        console.log(details)
+
+        console.log(details);
+
         let response = await fetch("http://localhost:3000/send", {
             method: "POST",
             headers: {
@@ -22,26 +28,31 @@ const ContactForm = () => {
             body: JSON.stringify(details),
         });
         setSubmitted(false);
+        setIsLoading(true);
         let result = await response.json();
         alert(result.status);
+        setIsLoading(false);
+        clearForm();
     };
+
+    const clearForm = () => {
+        document.getElementById("contact-us-form").reset();
+    }
 
     return (
         <div className="absolute flex flex-row justify-between p-0 mx-auto w-screen">
             <div className="w-1/2 flex flex-col mt-72 mx-auto">
-                <h1 className="text-5xl text-slate-50 my-10">We'd love to hear from you</h1>
+                <h1 className="sm:text-2xl md:text-4xl lg:text-5xl text-slate-50 my-10">We'd love to hear from you</h1>
                 <p className="text-xl text-slate-50">Fill out our form and our team will get back to you soon.</p>
             </div>
-            <div style={{ backgroundColor: "#192b38", opacity: "0.9" }} className="flex flex-col justify-between w-4/12 p-10 h-screen backdrop-blur-xl right-0">
-                <form onSubmit={handleSubmit}>
-                    <h2 className="text-5xl text-slate-50 mb-16">Contact Us</h2>
+            <div style={{ backgroundColor: "#192b38", opacity: "0.9", height: "100vh" }} className="flex flex-col justify-between sm:w-7/12 md:w-5/12 lg:w-5/12 p-10 h-screen backdrop-blur-xl right-0">
+                <form id={"contact-us-form"} onSubmit={handleSubmit}>
+                    <h2 className="sm:text-4xl md:text-4xl lg:text-5xl text-slate-50 mb-16">Contact Us</h2>
                     <div className="flex justify-between">
                         <label htmlFor="firstName" className="text-slate-50 self-center">First Name: </label>
                         <input
                             style={{ focus: "outline-none !important" }}
                             className="w-96 my-5 py-2 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
-                            // onChange={(e) => setFirstName(e.target.value)}
-                            // value={email.firstName}
                             type="text"
                             name="firstName"
                             id="firstName"
@@ -52,8 +63,6 @@ const ContactForm = () => {
                         <label htmlFor="lastName" className="text-slate-50 self-center">Last Name: </label>
                         <input
                             className="w-96 my-5 py-2 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
-                            // onChange={(e) => setLastName(e.target.value)}
-                            // value={email.lastName}
                             type="text"
                             name="lastName"
                             id="lastName"
@@ -64,23 +73,16 @@ const ContactForm = () => {
                         <label htmlFor="email" className="text-slate-50 self-center">Email: </label>
                         <input
                             className="w-96 my-5 py-2 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
-                            // onChange={(e) => setEmail(e.target.value)}
-                            // value={email.email}
                             type="email"
                             name="email"
                             id="email"
                             placeholder="email@email.com"
                         />
-                        {/* <p class="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
-                        Please provide a valid email address.
-                    </p> */}
                     </div>
                     <div className="flex justify-between">
                         <label htmlFor="phone" className="text-slate-50 self-center">Phone Number: </label>
                         <input
                             className="w-96 my-5 py-2 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
-                            // onChange={(e) => setPhone(e.target.value)}
-                            // value={email.phone}
                             type="tel"
                             // pattern="([0-9]{3})[0-9]{3}-[0-9]{4}"
                             name="phone"
@@ -92,8 +94,6 @@ const ContactForm = () => {
                         <label htmlFor="subject" className="text-slate-50 self-center">Subject: </label>
                         <input
                             className="w-96 my-5 py-2 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
-                            // onChange={(e) => setSubject(e.target.value)}
-                            // value={email.subject}
                             type="text"
                             name="subject"
                             id="subject"
@@ -104,8 +104,6 @@ const ContactForm = () => {
                         <label htmlFor="message" className="text-slate-50 self-center">Message: </label>
                         <textarea
                             className="w-96 h-26 my-5 py-3 bg-transparent backdrop-blur-lg border-b-2 text-slate-50 border-grey-800 focus:outline-none focus:ring-0"
-                            // onChange={(e) => setMessage(e.target.value)}
-                            // value={email.message}
                             name="message"
                             id="message"
                             placeholder="Type your message here"
@@ -113,7 +111,7 @@ const ContactForm = () => {
                     </div>
                     <button
                         type="submit"
-                        className="text-slate-50 mt-20 bg-gradient-to-r from-teal-700 to-cyan-900 px-7 py-2 rounded-md"
+                        className="text-slate-50 mt-20 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 bg-gradient-to-r from-teal-700 to-cyan-900 px-7 py-2 rounded-md"
                     >
                         Send Message
                 </button>

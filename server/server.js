@@ -1,9 +1,11 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
+const cors = require("cors");
 const app = express();
 require("dotenv").config();
 const port = 3000;
 
+app.use(cors());
 app.use(express.json());
 
 let transporter = nodemailer.createTransport({
@@ -25,16 +27,20 @@ transporter.verify((err, success) => {
 });
 
 app.post("/send", (req, res) => {
-    console.log(JSON.stringify(req.body.newMail))
-    console.log(req)
-    const name = req.body.firstName;
+    console.log(req.body)
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
     const email = req.body.email;
+    const subject = req.body.subject;
     const message = req.body.message;
     const mail = {
         from: email,
         to: process.env.EMAIL,
-        subject: "Contact Form Submission",
-        text: message
+        subject: `[CONTACT FORM] - ${subject}`,
+        text: `NAME: ${firstName} ${lastName}
+            EMAIL: ${email}
+            SUBJECT: ${subject}
+            MESSAGE: ${message}`
     };
 
     transporter.sendMail(mail, (err) => {
