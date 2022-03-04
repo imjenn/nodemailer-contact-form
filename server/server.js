@@ -31,16 +31,27 @@ app.post("/send", (req, res) => {
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     const email = req.body.email;
+    const phone = req.body.phone;
     const subject = req.body.subject;
     const message = req.body.message;
+    const fieldMessage = `
+        <div>
+            <strong>NAME: </strong> ${firstName} ${lastName} <br/> 
+            <strong>EMAIL: </strong> ${email} <br/> 
+            <strong>PHONE: </strong> ${phone} <br/> 
+            <strong>SUBJECT: </strong> ${subject} <br/>
+            <strong>MESSAGE: </strong> ${message} <br/>
+        </div>`
     const mail = {
         from: email,
         to: process.env.EMAIL,
-        subject: `[CONTACT FORM] - ${subject}`,
-        text: `NAME: ${firstName} ${lastName}
-            EMAIL: ${email}
-            SUBJECT: ${subject}
-            MESSAGE: ${message}`
+        subject: `[ NODEMAILER CONTACT FORM] - ${subject}`,
+        replyTo: email,
+        text: `NAME: ${firstName} ${lastName} 
+        EMAIL: ${email}
+        SUBJECT: ${subject}
+        MESSAGE: ${message}`,
+        html: fieldMessage
     };
 
     transporter.sendMail(mail, (err) => {

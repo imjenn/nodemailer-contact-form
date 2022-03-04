@@ -6,7 +6,9 @@
 html {
   background-image: url('./views/nature.png');
   background-repeat: no-repeat;
+  background-color: #192b38;
   background-size: cover;
+  background-position: center center; 
   height: 100%;
   width: 100%;
   font-family: 'Quicksand', sans-serif;

@@ -10,7 +10,7 @@ function App() {
         <Switch>
           <Route path="/">
           <Particles
-          style={{position: "absolute", zIndex: "-4"}}
+          style={{position: "absolute", zIndex: "4"}}
             params={{
               "particles": {
                 "number": {
